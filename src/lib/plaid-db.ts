@@ -1,10 +1,33 @@
 import { createClient, Client } from '@libsql/client';
 
-// Initialize Turso client
-const client: Client = createClient({
-  url: process.env.TURSO_DATABASE_URL || 'file:data/mission-control.db',
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
+// Lazy-initialize Turso client
+let _client: Client | null = null;
+
+function getClient(): Client {
+  if (_client) return _client;
+  
+  let dbUrl = process.env.TURSO_DATABASE_URL;
+  if (!dbUrl || dbUrl === 'undefined' || dbUrl.trim() === '') {
+    dbUrl = 'file:./data/mission-control.db';
+  }
+  
+  try {
+    _client = createClient({
+      url: dbUrl,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
+  } catch {
+    _client = createClient({ url: ':memory:' });
+  }
+  
+  return _client;
+}
+
+// Alias for backward compatibility
+const client = { 
+  get execute() { return getClient().execute.bind(getClient()); },
+  get batch() { return getClient().batch.bind(getClient()); },
+};
 
 // Initialize Plaid schema
 let plaidSchemaInitialized = false;
