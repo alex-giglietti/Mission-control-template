@@ -2,14 +2,22 @@
 
 import { useState } from "react";
 import CEODashboard from "@/components/CEODashboard";
+import RevenueEngine from "@/components/RevenueEngine";
+import AIWorkforce from "@/components/AIWorkforce";
+import ProfitPipeline from "@/components/ProfitPipeline";
+import MediaHub from "@/components/MediaHub";
+import Projects from "@/components/Projects";
+import Financials from "@/components/Financials";
 
 // Navigation items - add more here as needed
 const navItems = [
   { id: "ceo-dashboard", label: "CEO Dashboard", icon: "📊", color: "#FF4EDB" },
-  { id: "ai-workforce", label: "AI Workforce", icon: "🤖", color: "#2F80FF", disabled: true },
-  { id: "sales-pipeline", label: "Sales Pipeline", icon: "💰", color: "#7B61FF", disabled: true },
-  { id: "content-factory", label: "Content Factory", icon: "🎬", color: "#10B981", disabled: true },
-  { id: "analytics", label: "Analytics", icon: "📈", color: "#F59E0B", disabled: true },
+  { id: "revenue-engine", label: "Revenue Engine", icon: "💰", color: "#10B981" },
+  { id: "ai-workforce", label: "AI Workforce", icon: "🤖", color: "#2F80FF" },
+  { id: "profit-pipeline", label: "Profit Pipeline", icon: "📈", color: "#10B981" },
+  { id: "media-hub", label: "Media Hub", icon: "🎬", color: "#FF4EDB" },
+  { id: "projects", label: "Projects", icon: "📋", color: "#7B61FF" },
+  { id: "financials", label: "Financials", icon: "💵", color: "#10B981" },
 ];
 
 export default function Home() {
@@ -63,8 +71,7 @@ export default function Home() {
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => !item.disabled && setActiveView(item.id)}
-              disabled={item.disabled}
+              onClick={() => setActiveView(item.id)}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -72,7 +79,7 @@ export default function Home() {
                 padding: "12px 16px",
                 borderRadius: 8,
                 border: "none",
-                cursor: item.disabled ? "not-allowed" : "pointer",
+                cursor: "pointer",
                 textAlign: "left",
                 width: "100%",
                 transition: "all 0.15s ease",
@@ -82,7 +89,6 @@ export default function Home() {
                 borderLeft: activeView === item.id
                   ? `3px solid ${item.color}`
                   : "3px solid transparent",
-                opacity: item.disabled ? 0.4 : 1,
               }}
             >
               <span style={{ fontSize: 18 }}>{item.icon}</span>
@@ -94,19 +100,6 @@ export default function Home() {
               }}>
                 {item.label}
               </span>
-              {item.disabled && (
-                <span style={{
-                  marginLeft: "auto",
-                  fontSize: 9,
-                  color: "#6B7186",
-                  fontFamily: "'Orbitron', monospace",
-                  padding: "2px 6px",
-                  background: "rgba(255,255,255,0.05)",
-                  borderRadius: 4,
-                }}>
-                  SOON
-                </span>
-              )}
             </button>
           ))}
         </nav>
@@ -145,9 +138,12 @@ export default function Home() {
       {/* Main Content Area */}
       <div style={{ flex: 1, overflow: "auto" }}>
         {activeView === "ceo-dashboard" && <CEODashboard />}
-        {activeView === "ai-workforce" && <PlaceholderView title="AI Workforce" />}
-        {activeView === "sales-pipeline" && <PlaceholderView title="Sales Pipeline" />}
-        {activeView === "content-factory" && <PlaceholderView title="Content Factory" />}
+        {activeView === "revenue-engine" && <RevenueEngine />}
+        {activeView === "ai-workforce" && <AIWorkforce />}
+        {activeView === "profit-pipeline" && <ProfitPipeline />}
+        {activeView === "media-hub" && <MediaHub />}
+        {activeView === "projects" && <Projects />}
+        {activeView === "financials" && <Financials />}
         {activeView === "analytics" && <PlaceholderView title="Analytics" />}
       </div>
 
