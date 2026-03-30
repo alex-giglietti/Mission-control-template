@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-export default function ProjectsPage() {
-<<<<<<< HEAD
-  return <main className="p-8"><h1 className="text-2xl font-semibold">Projects</h1></main>;
-=======
-  return (
-    <main className="p-8">
-      <h1 className="text-2xl font-semibold">Projects</h1>
-    </main>
-  );
->>>>>>> origin/feature/get-sales
-=======
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
@@ -797,5 +785,4 @@ export default function ProjectsPage() {
       )}
     </div>
   );
->>>>>>> origin/feature/settings-ai-team
 }

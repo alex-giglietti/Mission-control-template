@@ -2,6 +2,13 @@
 
 import { useState } from 'react';
 
+// Shared card type (used by keep-customers and others)
+export interface PlaybookCard {
+  slug: string;
+  title: string;
+  description?: string;
+}
+
 interface Playbook {
   slug: string;
   title: string;
@@ -11,23 +18,20 @@ interface Playbook {
 
 export interface PlaybookSelectorProps {
   slugPrefix: string;
-  title: string;
+  // get-leads style props
+  title?: string;
   description?: string;
   onActiveChange?: (activeSlugs: string[]) => void;
+  // keep-customers style props
+  placeholderCards?: PlaybookCard[];
+  onSelectionChange?: (selected: PlaybookCard[]) => void;
 }
 
+// Built-in data keyed by slug prefix (used for get-leads style)
 const PLAYBOOK_DATA: Record<string, Playbook[]> = {
   'publish-': [
     { slug: 'publish-daily-7', title: 'Daily 7', description: 'Post 7 pieces of content every day across platforms.', source: 'Built-in' },
-<<<<<<< HEAD
-<<<<<<< HEAD
     { slug: 'publish-shorts-flood', title: 'Shorts Flood', description: 'Short-form video blitz across platforms daily.', source: 'Built-in' },
-=======
-    { slug: 'publish-shorts-flood', title: 'Shorts Flood', description: 'Short-form video blitz — 3 reels + 2 TikToks daily.', source: 'Built-in' },
->>>>>>> origin/feature/get-sales
-=======
-    { slug: 'publish-shorts-flood', title: 'Shorts Flood', description: 'Short-form video blitz 3 reels + 2 TikToks daily.', source: 'Built-in' },
->>>>>>> origin/feature/settings-ai-team
     { slug: 'publish-email-nurture', title: 'Email Nurture', description: 'Weekly email sequence to warm your list.', source: 'Custom' },
     { slug: 'publish-authority-blog', title: 'Authority Blog', description: 'Long-form posts that build SEO and credibility.', source: 'Built-in' },
   ],
@@ -49,20 +53,58 @@ const PLAYBOOK_DATA: Record<string, Playbook[]> = {
     { slug: 'partner-affiliate-launch', title: 'Affiliate Launch', description: 'Partner-promoted launch to their email list.', source: 'Custom' },
     { slug: 'partner-ig-takeover', title: 'IG Takeover', description: 'Swap Instagram stories with a strategic partner.', source: 'Built-in' },
   ],
+  'fulfill-': [
+    { slug: 'fulfill-onboard-fast', title: 'Fast Onboarding', description: 'Get new clients results within 72 hours of joining.', source: 'Built-in' },
+    { slug: 'fulfill-weekly-wins', title: 'Weekly Wins', description: 'Send a win summary every Monday to keep momentum.', source: 'Built-in' },
+    { slug: 'fulfill-loom-review', title: 'Loom Review', description: 'Weekly personalized Loom video feedback per client.', source: 'Custom' },
+  ],
+  'grow-': [
+    { slug: 'grow-upsell-sequence', title: 'Upsell Sequence', description: 'Email sequence introducing higher-tier offers.', source: 'Built-in' },
+    { slug: 'grow-referral-ask', title: 'Referral Ask', description: 'Structured ask for referrals after early wins.', source: 'Built-in' },
+    { slug: 'grow-testimonial', title: 'Testimonial Capture', description: 'Automated follow-up for case studies and reviews.', source: 'Custom' },
+  ],
 };
 
 function getPlaybooks(slugPrefix: string): Playbook[] {
   return PLAYBOOK_DATA[slugPrefix] ?? [];
 }
 
+const DEFAULT_CARDS: PlaybookCard[] = [
+  { slug: 'placeholder-1', title: 'Playbook A', description: 'Coming soon' },
+  { slug: 'placeholder-2', title: 'Playbook B', description: 'Coming soon' },
+  { slug: 'placeholder-3', title: 'Playbook C', description: 'Coming soon' },
+];
+
 export default function PlaybookSelector({
   slugPrefix,
   description,
   onActiveChange,
+  placeholderCards,
+  onSelectionChange,
 }: PlaybookSelectorProps) {
-  const playbooks = getPlaybooks(slugPrefix);
+  // Determine mode: if placeholderCards provided, use keep-customers style
+  const isCardMode = placeholderCards !== undefined || onSelectionChange !== undefined;
   const [active, setActive] = useState<Set<string>>(new Set());
+  const [selectedCards, setSelectedCards] = useState<Set<string>>(new Set());
 
+  // Card mode (keep-customers)
+  const cards = placeholderCards ?? DEFAULT_CARDS;
+  const toggleCard = (card: PlaybookCard) => {
+    setSelectedCards((prev) => {
+      const next = new Set(prev);
+      if (next.has(card.slug)) {
+        next.delete(card.slug);
+      } else {
+        next.add(card.slug);
+      }
+      const selected = cards.filter((c) => next.has(c.slug));
+      onSelectionChange?.(selected);
+      return next;
+    });
+  };
+
+  // Slug-prefix mode (get-leads)
+  const playbooks = getPlaybooks(slugPrefix);
   const toggle = (slug: string) => {
     setActive((prev) => {
       const next = new Set(prev);
@@ -76,6 +118,51 @@ export default function PlaybookSelector({
     });
   };
 
+  if (isCardMode) {
+    // Keep-customers style with provided cards
+    return (
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+          {cards.map((card) => {
+            const isSelected = selectedCards.has(card.slug);
+            return (
+              <div
+                key={card.slug}
+                onClick={() => toggleCard(card)}
+                style={{
+                  border: isSelected ? '2px solid #111' : '1.5px solid #e0e0e0',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  cursor: 'pointer',
+                  background: '#fff',
+                  transition: 'border-color 0.15s ease',
+                  userSelect: 'none',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '14px', fontWeight: isSelected ? 700 : 500, color: '#111', fontFamily: 'Montserrat, sans-serif' }}>
+                    {card.title}
+                  </span>
+                  {isSelected && (
+                    <span style={{ fontSize: '10px', fontWeight: 600, color: '#111', background: '#f0f0f0', padding: '2px 7px', borderRadius: '20px', letterSpacing: '0.04em', textTransform: 'uppercase' as const, fontFamily: 'Montserrat, sans-serif' }}>
+                      Active
+                    </span>
+                  )}
+                </div>
+                {card.description && (
+                  <p style={{ fontSize: '12px', color: '#777', margin: 0, lineHeight: '1.5', fontFamily: 'Montserrat, sans-serif' }}>
+                    {card.description}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // Get-leads style with built-in data
   return (
     <div style={{ marginBottom: '32px' }}>
       {description && (
@@ -83,22 +170,7 @@ export default function PlaybookSelector({
           {description}
         </p>
       )}
-<<<<<<< HEAD
-<<<<<<< HEAD
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-=======
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '12px',
-        }}
-      >
->>>>>>> origin/feature/get-sales
-=======
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
->>>>>>> origin/feature/settings-ai-team
         {playbooks.map((pb) => {
           const isActive = active.has(pb.slug);
           return (
@@ -116,136 +188,31 @@ export default function PlaybookSelector({
               }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '6px' }}>
-<<<<<<< HEAD
-<<<<<<< HEAD
                 <span style={{ fontSize: '14px', fontWeight: isActive ? 700 : 500, color: '#111', fontFamily: 'Montserrat, sans-serif' }}>
-=======
-                <span
-                  style={{
-                    fontSize: '14px',
-                    fontWeight: isActive ? 700 : 500,
-                    color: '#111',
-                    fontFamily: 'Montserrat, sans-serif',
-                  }}
-                >
->>>>>>> origin/feature/get-sales
-=======
-                <span style={{ fontSize: '14px', fontWeight: isActive ? 700 : 500, color: '#111', fontFamily: 'Montserrat, sans-serif' }}>
->>>>>>> origin/feature/settings-ai-team
                   {pb.title}
                 </span>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0, marginLeft: '8px' }}>
                   {isActive && (
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/feature/settings-ai-team
                     <span style={{ fontSize: '10px', fontWeight: 600, color: '#111', background: '#f0f0f0', padding: '2px 7px', borderRadius: '20px', letterSpacing: '0.04em', textTransform: 'uppercase' as const, fontFamily: 'Montserrat, sans-serif' }}>
                       Active
                     </span>
                   )}
                   <span style={{ fontSize: '10px', fontWeight: 500, color: '#999', background: '#f7f7f7', padding: '2px 7px', borderRadius: '20px', fontFamily: 'Montserrat, sans-serif' }}>
-<<<<<<< HEAD
-=======
-                    <span
-                      style={{
-                        fontSize: '10px',
-                        fontWeight: 600,
-                        color: '#111',
-                        background: '#f0f0f0',
-                        padding: '2px 7px',
-                        borderRadius: '20px',
-                        letterSpacing: '0.04em',
-                        textTransform: 'uppercase' as const,
-                        fontFamily: 'Montserrat, sans-serif',
-                      }}
-                    >
-                      Active
-                    </span>
-                  )}
-                  <span
-                    style={{
-                      fontSize: '10px',
-                      fontWeight: 500,
-                      color: '#999',
-                      background: '#f7f7f7',
-                      padding: '2px 7px',
-                      borderRadius: '20px',
-                      fontFamily: 'Montserrat, sans-serif',
-                    }}
-                  >
->>>>>>> origin/feature/get-sales
-=======
->>>>>>> origin/feature/settings-ai-team
                     {pb.source}
                   </span>
                 </div>
               </div>
-<<<<<<< HEAD
-<<<<<<< HEAD
               <p style={{ fontSize: '12px', color: '#777', margin: 0, lineHeight: '1.5', fontFamily: 'Montserrat, sans-serif' }}>
-=======
-              <p
-                style={{
-                  fontSize: '12px',
-                  color: '#777',
-                  margin: 0,
-                  lineHeight: '1.5',
-                  fontFamily: 'Montserrat, sans-serif',
-                }}
-              >
->>>>>>> origin/feature/get-sales
-=======
-              <p style={{ fontSize: '12px', color: '#777', margin: 0, lineHeight: '1.5', fontFamily: 'Montserrat, sans-serif' }}>
->>>>>>> origin/feature/settings-ai-team
                 {pb.description}
               </p>
             </div>
           );
         })}
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/feature/settings-ai-team
         <a
           href="/connections"
           style={{ border: '1.5px dashed #d0d0d0', borderRadius: '8px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '13px', fontWeight: 500, fontFamily: 'Montserrat, sans-serif', textDecoration: 'none', cursor: 'pointer', minHeight: '80px' }}
           onMouseEnter={(e) => { const el = e.currentTarget as HTMLAnchorElement; el.style.borderColor = '#aaa'; el.style.color = '#555'; }}
           onMouseLeave={(e) => { const el = e.currentTarget as HTMLAnchorElement; el.style.borderColor = '#d0d0d0'; el.style.color = '#aaa'; }}
-<<<<<<< HEAD
-=======
-
-        <a
-          href="/connections"
-          style={{
-            border: '1.5px dashed #d0d0d0',
-            borderRadius: '8px',
-            padding: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#aaa',
-            fontSize: '13px',
-            fontWeight: 500,
-            fontFamily: 'Montserrat, sans-serif',
-            textDecoration: 'none',
-            cursor: 'pointer',
-            transition: 'border-color 0.15s ease, color 0.15s ease',
-            minHeight: '80px',
-          }}
-          onMouseEnter={(e) => {
-            const el = e.currentTarget as HTMLAnchorElement;
-            el.style.borderColor = '#aaa';
-            el.style.color = '#555';
-          }}
-          onMouseLeave={(e) => {
-            const el = e.currentTarget as HTMLAnchorElement;
-            el.style.borderColor = '#d0d0d0';
-            el.style.color = '#aaa';
-          }}
->>>>>>> origin/feature/get-sales
-=======
->>>>>>> origin/feature/settings-ai-team
         >
           + Add playbook
         </a>
@@ -254,38 +221,4 @@ export default function PlaybookSelector({
   );
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 export { getPlaybooks };
-=======
-export { getPlaybooks 
-  'nurture-': [
-    { slug: 'nurture-weekly-value-email',    title: 'Weekly value email',      description: 'Consistent value drip that keeps leads warm.',         source: 'Built-in' },
-    { slug: 'nurture-post-webinar-followup', title: 'Post-webinar follow-up',  description: 'Re-engage attendees after a live or recorded event.',   source: 'Built-in' },
-    { slug: 'nurture-noshow-reengage',       title: 'No-show re-engage',       description: 'Bring back prospects who registered but did not show.', source: 'Built-in' },
-    { slug: 'nurture-sms-drip',             title: 'SMS nurture drip',        description: 'Text-based sequence that moves leads toward a call.',    source: 'Built-in' },
-    { slug: 'nurture-reengagement-campaign', title: 'Re-engagement campaign',  description: 'Revive cold contacts who went quiet.',                   source: 'Custom'   },
-  ],
-  'profit-cart-': [
-    { slug: 'profit-cart-order-bump',    title: 'Order Bump',         description: 'Add a low-ticket upsell at checkout.',             source: 'Built-in' },
-    { slug: 'profit-cart-vsl-page',      title: 'VSL Page',           description: 'Video sales letter driving direct purchase.',      source: 'Built-in' },
-    { slug: 'profit-cart-tripwire',      title: 'Tripwire Offer',     description: 'Low-cost entry offer that converts browsers.',     source: 'Custom'   },
-    { slug: 'profit-cart-abandon-email', title: 'Cart Abandon Email', description: 'Recover leads who left checkout without buying.', source: 'Built-in' },
-  ],
-  'profit-call-': [
-    { slug: 'profit-call-strategy-call', title: 'Strategy Call',  description: 'Consultative close on a 45-minute strategy session.', source: 'Built-in' },
-    { slug: 'profit-call-vip-day',       title: 'VIP Day Offer',  description: 'High-ticket day-rate sold via conversation.',         source: 'Custom'   },
-    { slug: 'profit-call-qualifier',     title: 'Call Qualifier',  description: 'Pre-call sequence that warms leads before the close.', source: 'Built-in' },
-    { slug: 'profit-call-no-show-sms',   title: 'No-Show SMS',    description: 'Text sequence to rescue missed sales calls.',         source: 'Built-in' },
-  ],
-  'profit-crowd-': [
-    { slug: 'profit-crowd-webinar-close',   title: 'Webinar Close',    description: 'Live pitch sequence at the end of a webinar.',    source: 'Built-in' },
-    { slug: 'profit-crowd-challenge-sell',  title: 'Challenge Sell',   description: 'Sell on day 5 of a 5-day challenge.',             source: 'Built-in' },
-    { slug: 'profit-crowd-workshop-upsell', title: 'Workshop Upsell',  description: 'Upsell from a free workshop to a paid program.',  source: 'Custom'   },
-    { slug: 'profit-crowd-summit-close',    title: 'Summit Close',     description: 'Convert summit attendees at the end of day 2.',   source: 'Built-in' },
-  ],
-};
->>>>>>> origin/feature/get-sales
-=======
-export { getPlaybooks };
->>>>>>> origin/feature/settings-ai-team
