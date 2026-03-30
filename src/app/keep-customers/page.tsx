@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import PlaybookSelector, { PlaybookCard } from "@/components/PlaybookSelector";
+import PlaybookSelector from "@/components/PlaybookSelector";
+import type { PlaybookCard } from "@/components/PlaybookSelector";
 import PreflightCheck from "@/components/PreflightCheck";
 import ExecutionPopup from "@/components/ExecutionPopup";
 
@@ -10,26 +11,50 @@ import ExecutionPopup from "@/components/ExecutionPopup";
 // ---------------------------------------------------------------------------
 
 const KPI_DATA = [
-  { label: "Active Clients", value: "47" },
-  { label: "Referrals", value: "12" },
-  { label: "Upsell Rate", value: "23%" },
-  { label: "Churn", value: "2.1%" },
+  { label: "Active Clients", value: "142" },
+  { label: "Referrals", value: "38" },
+  { label: "Upsell Rate", value: "24%" },
+  { label: "Churn", value: "3.1%" },
 ];
 
 const DELIVER_CARDS: PlaybookCard[] = [
-  { slug: "fulfill-onboarding", title: "Client onboarding sequence", description: "First 7 days after purchase" },
-  { slug: "fulfill-welcome-email", title: "Welcome email series", description: "4-part brand welcome sequence" },
-  { slug: "fulfill-kickoff", title: "Kickoff call booking", description: "Automated scheduler + reminder" },
+  {
+    slug: "fulfill-onboarding",
+    title: "Client onboarding sequence",
+    description: "First 7 days after purchase",
+  },
+  {
+    slug: "fulfill-welcome-email",
+    title: "Welcome email series",
+    description: "4-part brand welcome sequence",
+  },
+  {
+    slug: "fulfill-kickoff",
+    title: "Kickoff call booking",
+    description: "Automated scheduler + reminder",
+  },
 ];
 
 const GROW_CARDS: PlaybookCard[] = [
-  { slug: "grow-upsell", title: "Upsell sequence", description: "Identify and convert upgrade opportunities" },
-  { slug: "grow-referral", title: "Referral program", description: "Ask + reward at peak happiness moment" },
-  { slug: "grow-reengagement", title: "Re-engagement campaign", description: "Reactivate quiet clients" },
+  {
+    slug: "grow-upsell",
+    title: "Upsell sequence",
+    description: "Identify and convert upgrade opportunities",
+  },
+  {
+    slug: "grow-referral",
+    title: "Referral program",
+    description: "Ask + reward at peak happiness moment",
+  },
+  {
+    slug: "grow-reengagement",
+    title: "Re-engagement campaign",
+    description: "Reactivate quiet clients",
+  },
 ];
 
 // ---------------------------------------------------------------------------
-// Styles
+// Shared style tokens
 // ---------------------------------------------------------------------------
 
 const FONT = "Montserrat, sans-serif";
@@ -44,7 +69,7 @@ const sectionLabel: React.CSSProperties = {
   marginBottom: 10,
 };
 
-const sectionTitle: React.CSSProperties = {
+const sectionHeading: React.CSSProperties = {
   fontFamily: FONT,
   fontSize: 11,
   fontWeight: 700,
@@ -52,10 +77,12 @@ const sectionTitle: React.CSSProperties = {
   textTransform: "uppercase",
   color: "#555",
   marginBottom: 14,
+  paddingBottom: 10,
+  borderBottom: "1px solid #f0f0f0",
 };
 
 // ---------------------------------------------------------------------------
-// Create panel
+// Create panel (inline dropdown)
 // ---------------------------------------------------------------------------
 
 const CREATE_OPTIONS = ["Email", "SMS", "Update"];
@@ -106,8 +133,12 @@ function CreatePanel({ onClose }: { onClose: () => void }) {
             color: "#111",
             cursor: "pointer",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "#f7f7f7")}
-          onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
+          onMouseEnter={(e) =>
+            ((e.currentTarget as HTMLButtonElement).style.background = "#f7f7f7")
+          }
+          onMouseLeave={(e) =>
+            ((e.currentTarget as HTMLButtonElement).style.background = "none")
+          }
         >
           {opt}
         </button>
@@ -128,6 +159,7 @@ export default function KeepCustomersPage() {
   const [showExecution, setShowExecution] = useState(false);
 
   const allSelected = [...deliverSelected, ...growSelected];
+  const canGenerate = allSelected.length > 0;
 
   return (
     <div
@@ -138,9 +170,9 @@ export default function KeepCustomersPage() {
         color: "#111",
       }}
     >
-      {/* ------------------------------------------------------------------ */}
-      {/* Header                                                              */}
-      {/* ------------------------------------------------------------------ */}
+      {/* ---------------------------------------------------------------- */}
+      {/* Header                                                            */}
+      {/* ---------------------------------------------------------------- */}
       <div
         style={{
           padding: "32px 40px 0",
@@ -176,7 +208,7 @@ export default function KeepCustomersPage() {
           </p>
         </div>
 
-        {/* + Create button */}
+        {/* + Create */}
         <div style={{ position: "relative" }}>
           <button
             onClick={() => setShowCreate((v) => !v)}
@@ -195,13 +227,15 @@ export default function KeepCustomersPage() {
           >
             + Create
           </button>
-          {showCreate && <CreatePanel onClose={() => setShowCreate(false)} />}
+          {showCreate && (
+            <CreatePanel onClose={() => setShowCreate(false)} />
+          )}
         </div>
       </div>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Training video bar                                                  */}
-      {/* ------------------------------------------------------------------ */}
+      {/* ---------------------------------------------------------------- */}
+      {/* Training video bar                                                */}
+      {/* ---------------------------------------------------------------- */}
       <div
         style={{
           margin: "24px 40px 0",
@@ -214,7 +248,7 @@ export default function KeepCustomersPage() {
           fontWeight: 500,
           display: "flex",
           alignItems: "center",
-          gap: 12,
+          gap: 14,
         }}
       >
         <span
@@ -232,15 +266,15 @@ export default function KeepCustomersPage() {
         <span>The delivery-to-referral loop (Joseph, 2 min)</span>
       </div>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* KPI row                                                             */}
-      {/* ------------------------------------------------------------------ */}
+      {/* ---------------------------------------------------------------- */}
+      {/* KPI row                                                           */}
+      {/* ---------------------------------------------------------------- */}
       <div
         style={{
           margin: "24px 40px 0",
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 16,
+          gap: 14,
         }}
       >
         {KPI_DATA.map((kpi) => (
@@ -279,20 +313,11 @@ export default function KeepCustomersPage() {
         ))}
       </div>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* DELIVER section                                                     */}
-      {/* ------------------------------------------------------------------ */}
+      {/* ---------------------------------------------------------------- */}
+      {/* DELIVER section                                                   */}
+      {/* ---------------------------------------------------------------- */}
       <div style={{ margin: "36px 40px 0" }}>
-        <div
-          style={{
-            ...sectionTitle,
-            borderBottom: "1px solid #f0f0f0",
-            paddingBottom: 10,
-            marginBottom: 16,
-          }}
-        >
-          Deliver — Fulfill Your Promise
-        </div>
+        <div style={sectionHeading}>Deliver — Fulfill Your Promise</div>
         <PlaybookSelector
           slugPrefix="fulfill-"
           placeholderCards={DELIVER_CARDS}
@@ -300,20 +325,11 @@ export default function KeepCustomersPage() {
         />
       </div>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* GROW section                                                        */}
-      {/* ------------------------------------------------------------------ */}
+      {/* ---------------------------------------------------------------- */}
+      {/* GROW section                                                      */}
+      {/* ---------------------------------------------------------------- */}
       <div style={{ margin: "36px 40px 0" }}>
-        <div
-          style={{
-            ...sectionTitle,
-            borderBottom: "1px solid #f0f0f0",
-            paddingBottom: 10,
-            marginBottom: 16,
-          }}
-        >
-          Grow — Upsell and Expand
-        </div>
+        <div style={sectionHeading}>Grow — Upsell and Expand</div>
         <PlaybookSelector
           slugPrefix="grow-"
           placeholderCards={GROW_CARDS}
@@ -321,15 +337,15 @@ export default function KeepCustomersPage() {
         />
       </div>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Bottom generate bar                                                 */}
-      {/* ------------------------------------------------------------------ */}
+      {/* ---------------------------------------------------------------- */}
+      {/* Bottom generate bar                                               */}
+      {/* ---------------------------------------------------------------- */}
       <div
         style={{
           margin: "40px 40px 0",
           borderTop: "1px solid #f0f0f0",
           paddingTop: 20,
-          paddingBottom: 40,
+          paddingBottom: 48,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -342,7 +358,8 @@ export default function KeepCustomersPage() {
           ) : (
             <>
               <span style={{ fontWeight: 700, color: "#111" }}>
-                {allSelected.length} playbook{allSelected.length !== 1 ? "s" : ""}
+                {allSelected.length} playbook
+                {allSelected.length !== 1 ? "s" : ""}
               </span>{" "}
               selected:{" "}
               <span style={{ color: "#555" }}>
@@ -353,20 +370,18 @@ export default function KeepCustomersPage() {
         </div>
 
         <button
-          onClick={() => {
-            if (allSelected.length > 0) setShowPreflight(true);
-          }}
-          disabled={allSelected.length === 0}
+          onClick={() => canGenerate && setShowPreflight(true)}
+          disabled={!canGenerate}
           style={{
             padding: "11px 28px",
             borderRadius: 6,
             border: "none",
-            background: allSelected.length > 0 ? "#111" : "#e0e0e0",
-            color: allSelected.length > 0 ? "#fff" : "#999",
+            background: canGenerate ? "#111" : "#e0e0e0",
+            color: canGenerate ? "#fff" : "#999",
             fontFamily: FONT,
             fontSize: 13,
             fontWeight: 700,
-            cursor: allSelected.length > 0 ? "pointer" : "not-allowed",
+            cursor: canGenerate ? "pointer" : "not-allowed",
             letterSpacing: "0.03em",
             transition: "all 0.15s ease",
             flexShrink: 0,
@@ -376,9 +391,9 @@ export default function KeepCustomersPage() {
         </button>
       </div>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Modals                                                              */}
-      {/* ------------------------------------------------------------------ */}
+      {/* ---------------------------------------------------------------- */}
+      {/* Modals                                                            */}
+      {/* ---------------------------------------------------------------- */}
       {showPreflight && (
         <PreflightCheck
           selectedPlaybooks={allSelected}
