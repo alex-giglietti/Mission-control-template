@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-export default function GetLeadsPage() {
-  return <main className="p-8"><h1 className="text-2xl font-semibold">Get Leads</h1></main>;
-=======
 'use client';
 
 import { useState, useCallback } from 'react';
@@ -11,40 +7,36 @@ import ExecutionPopup from '@/components/ExecutionPopup';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface KpiCard {
+interface KpiItem {
   label: string;
   value: string;
   sub?: string;
 }
 
-// ─── Static KPI data ─────────────────────────────────────────────────────────
+// ─── Static data ──────────────────────────────────────────────────────────────
 
-const KPI_CARDS: KpiCard[] = [
-  { label: 'Views', value: '24,810', sub: 'last 30d' },
-  { label: 'Leads', value: '312', sub: 'last 30d' },
-  { label: 'Cost / Lead', value: '$4.20', sub: 'avg' },
-  { label: 'Best Source', value: 'FB Ads', sub: 'most leads' },
+const KPI_CARDS: KpiItem[] = [
+  { label: 'Pipeline',        value: '$48,200', sub: 'open deals'    },
+  { label: 'Sales',           value: '$12,500', sub: 'last 30d'      },
+  { label: 'Conversion',      value: '26%',     sub: 'lead → buyer'  },
+  { label: 'Avg Order Value', value: '$1,042',  sub: 'per sale'      },
 ];
-
-// ─── Playbook sections ───────────────────────────────────────────────────────
 
 const SECTIONS = [
-  { slugPrefix: 'publish-', sectionLabel: 'CONTENT — GET SEEN EVERY DAY' },
-  { slugPrefix: 'prospect-', sectionLabel: 'PROSPECTING — REACH NEW PEOPLE' },
-  { slugPrefix: 'pay-', sectionLabel: 'PAID ADS — BUY ATTENTION' },
-  { slugPrefix: 'partner-', sectionLabel: 'PARTNERSHIPS — LEVERAGE OTHER AUDIENCES' },
+  { slugPrefix: 'nurture-',      sectionLabel: 'NURTURE — WARM LEADS UNTIL THEY BUY' },
+  { slugPrefix: 'profit-cart-',  sectionLabel: 'CLICK — SELL FROM A PAGE'            },
+  { slugPrefix: 'profit-call-',  sectionLabel: 'CALL — SELL FROM A CONVERSATION'     },
+  { slugPrefix: 'profit-crowd-', sectionLabel: 'CROWD — SELL FROM A STAGE'           },
 ];
-
-// ─── Quick Create steps ──────────────────────────────────────────────────────
 
 const CREATE_STEPS = [
-  { id: 'what', label: 'What are you promoting?', placeholder: 'e.g. AI Monetizations Live webinar' },
-  { id: 'where', label: 'Where will it run?', placeholder: 'e.g. Instagram, email, YouTube Shorts' },
-  { id: 'message', label: 'What should it say?', placeholder: 'e.g. Show how AI can replace your team and save $10k/mo' },
-  { id: 'face', label: "Who's the face?", placeholder: 'e.g. Joseph Aaron' },
+  { id: 'type',    label: 'What are you creating?',   placeholder: 'e.g. Email, SMS, or Landing page' },
+  { id: 'offer',   label: 'What is the offer?',        placeholder: 'e.g. AI Monetizations Live — $2,997' },
+  { id: 'message', label: 'What should it say?',       placeholder: 'e.g. Here is why this works for your situation...' },
+  { id: 'cta',     label: 'What is the call to action?', placeholder: 'e.g. Book a call, Buy now, Watch the demo' },
 ];
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const labelStyle: React.CSSProperties = {
   fontSize: '8px',
@@ -57,10 +49,10 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
 };
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page ──────────────────────────────────────────────────────────────────────
 
-export default function GetLeadsPage() {
-  // Active playbooks across all sections
+export default function GetSalesPage() {
+  // Active playbooks per section
   const [activeByPrefix, setActiveByPrefix] = useState<Record<string, string[]>>({});
 
   // Video bar
@@ -81,13 +73,14 @@ export default function GetLeadsPage() {
   const allActiveSlugs = Object.values(activeByPrefix).flat();
   const activeCount = allActiveSlugs.length;
 
-  // Build a short display summary of active playbooks
+  // Short summary of active playbooks for the bottom bar
   const activeSummary = (() => {
     if (activeCount === 0) return 'No playbooks active';
     const names = allActiveSlugs
       .map((slug) => slug.split('-').slice(1).join(' '))
       .map((n) => n.charAt(0).toUpperCase() + n.slice(1));
-    if (names.length <= 2) return `${activeCount} playbook${activeCount !== 1 ? 's' : ''} active · ${names.join(' + ')}`;
+    if (names.length <= 2)
+      return `${activeCount} playbook${activeCount !== 1 ? 's' : ''} active · ${names.join(' + ')}`;
     return `${activeCount} playbooks active · ${names[0]} + ${names[1]} + ${activeCount - 2} more`;
   })();
 
@@ -97,19 +90,18 @@ export default function GetLeadsPage() {
 
   const handleGenerateClick = () => {
     setPreflightVisible(true);
-    if (canProceed) {
-      setPopupOpen(true);
-    }
+    if (canProceed) setPopupOpen(true);
   };
 
-  const handleCanProceed = useCallback((ok: boolean) => {
-    setCanProceed(ok);
-    if (ok && preflightVisible) {
-      setPopupOpen(true);
-    }
-  }, [preflightVisible]);
+  const handleCanProceed = useCallback(
+    (ok: boolean) => {
+      setCanProceed(ok);
+      if (ok && preflightVisible) setPopupOpen(true);
+    },
+    [preflightVisible]
+  );
 
-  // Create panel
+  // Create panel handlers
   const handleCreateNext = () => {
     if (createStep < CREATE_STEPS.length - 1) {
       setCreateStep((s) => s + 1);
@@ -138,7 +130,14 @@ export default function GetLeadsPage() {
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 24px 0' }}>
 
         {/* ── Header ── */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '8px' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            marginBottom: '8px',
+          }}
+        >
           <span style={labelStyle}>GROW</span>
           <button
             onClick={() => setCreatePanelOpen(true)}
@@ -168,7 +167,7 @@ export default function GetLeadsPage() {
             letterSpacing: '-0.03em',
           }}
         >
-          Get Leads
+          Get Sales
         </h1>
         <p
           style={{
@@ -178,7 +177,7 @@ export default function GetLeadsPage() {
             lineHeight: '1.5',
           }}
         >
-          Turn views into leads. Pick a playbook. Click generate. AI does the rest.
+          Turn leads into buyers. Pick how you sell.
         </p>
 
         {/* ── Training video bar ── */}
@@ -210,13 +209,11 @@ export default function GetLeadsPage() {
             }}
           >
             {videoPlaying ? (
-              /* Pause bars */
               <div style={{ display: 'flex', gap: '3px' }}>
                 <div style={{ width: '3px', height: '12px', background: '#fff', borderRadius: '1px' }} />
                 <div style={{ width: '3px', height: '12px', background: '#fff', borderRadius: '1px' }} />
               </div>
             ) : (
-              /* Play triangle */
               <div
                 style={{
                   width: 0,
@@ -231,12 +228,12 @@ export default function GetLeadsPage() {
           </div>
           <div>
             <div style={{ fontSize: '13px', fontWeight: '600', color: '#111' }}>
-              {videoPlaying ? 'Playing...' : 'Watch: How the 4 lead methods work (Joseph, 2 min)'}
+              {videoPlaying
+                ? 'Playing...'
+                : 'Watch: Click, Call, or Crowd \u2014 choosing your sales method (Joseph, 3 min)'}
             </div>
             {videoPlaying && (
-              <div style={{ fontSize: '11px', color: '#999', marginTop: '2px' }}>
-                Click to pause
-              </div>
+              <div style={{ fontSize: '11px', color: '#999', marginTop: '2px' }}>Click to pause</div>
             )}
           </div>
         </div>
@@ -259,14 +256,32 @@ export default function GetLeadsPage() {
                 padding: '16px',
               }}
             >
-              <div style={{ fontSize: '8px', fontWeight: '700', color: '#bbb', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
+              <div
+                style={{
+                  fontSize: '8px',
+                  fontWeight: '700',
+                  color: '#bbb',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  marginBottom: '8px',
+                }}
+              >
                 {kpi.label}
               </div>
-              <div style={{ fontSize: '22px', fontWeight: '800', color: '#111', letterSpacing: '-0.03em' }}>
+              <div
+                style={{
+                  fontSize: '22px',
+                  fontWeight: '800',
+                  color: '#111',
+                  letterSpacing: '-0.03em',
+                }}
+              >
                 {kpi.value}
               </div>
               {kpi.sub && (
-                <div style={{ fontSize: '11px', color: '#bbb', marginTop: '2px' }}>{kpi.sub}</div>
+                <div style={{ fontSize: '11px', color: '#bbb', marginTop: '2px' }}>
+                  {kpi.sub}
+                </div>
               )}
             </div>
           ))}
@@ -284,7 +299,7 @@ export default function GetLeadsPage() {
           </div>
         ))}
 
-        {/* Pre-flight (shown inline above generate bar when triggered) */}
+        {/* Pre-flight (inline above generate bar when triggered) */}
         {preflightVisible && !popupOpen && (
           <div style={{ marginBottom: '80px' }}>
             <PreflightCheck
@@ -313,13 +328,7 @@ export default function GetLeadsPage() {
         }}
       >
         <div>
-          <div
-            style={{
-              fontSize: '13px',
-              fontWeight: '600',
-              color: '#111',
-            }}
-          >
+          <div style={{ fontSize: '13px', fontWeight: '600', color: '#111' }}>
             {activeSummary}
           </div>
           {activeCount === 0 && (
@@ -390,7 +399,7 @@ export default function GetLeadsPage() {
               boxShadow: '-4px 0 32px rgba(0,0,0,0.1)',
             }}
           >
-            {/* Close */}
+            {/* Close button */}
             <button
               onClick={handleCreateClose}
               style={{
@@ -402,36 +411,31 @@ export default function GetLeadsPage() {
                 fontSize: '20px',
                 cursor: 'pointer',
                 color: '#999',
-                fontFamily: 'Montserrat, sans-serif',
                 lineHeight: 1,
+                padding: '4px',
               }}
               aria-label="Close"
             >
-              ×
+              &times;
             </button>
 
-            <span style={labelStyle}>QUICK CREATE</span>
-            <h2
-              style={{
-                fontSize: '20px',
-                fontWeight: '800',
-                color: '#111',
-                margin: '0 0 32px',
-                letterSpacing: '-0.02em',
-              }}
-            >
-              New Content
-            </h2>
-
             {createDone ? (
-              /* Done state */
-              <div style={{ textAlign: 'center', paddingTop: '40px' }}>
-                <div style={{ fontSize: '18px', fontWeight: '700', color: '#111', marginBottom: '8px' }}>
-                  Sent to Inbox
+              /* ── Success ── */
+              <div style={{ paddingTop: '40px', textAlign: 'center' }}>
+                <div
+                  style={{
+                    fontSize: '22px',
+                    fontWeight: '800',
+                    color: '#111',
+                    marginBottom: '8px',
+                    letterSpacing: '-0.02em',
+                  }}
+                >
+                  Created
                 </div>
-                <div style={{ fontSize: '14px', color: '#777', marginBottom: '32px' }}>
-                  Your content is generating.
-                </div>
+                <p style={{ fontSize: '14px', color: '#777', marginBottom: '32px' }}>
+                  Your sales asset has been added.
+                </p>
                 <button
                   onClick={handleCreateClose}
                   style={{
@@ -439,108 +443,145 @@ export default function GetLeadsPage() {
                     color: '#fff',
                     border: 'none',
                     borderRadius: '8px',
-                    padding: '12px 28px',
-                    fontSize: '13px',
+                    padding: '12px 32px',
+                    fontSize: '14px',
                     fontWeight: '600',
                     cursor: 'pointer',
                     fontFamily: 'Montserrat, sans-serif',
                   }}
                 >
-                  View Inbox
+                  Done
                 </button>
               </div>
             ) : (
+              /* ── Steps ── */
               <>
-                {/* Step indicator */}
-                <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
-                  {CREATE_STEPS.map((_, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        flex: 1,
-                        height: '3px',
-                        borderRadius: '2px',
-                        background: i <= createStep ? '#111' : '#e0e0e0',
-                        transition: 'background 0.2s',
-                      }}
-                    />
-                  ))}
-                </div>
+                <span style={labelStyle}>
+                  Step {createStep + 1} of {CREATE_STEPS.length}
+                </span>
+                <h2
+                  style={{
+                    fontSize: '20px',
+                    fontWeight: '800',
+                    color: '#111',
+                    margin: '0 0 24px',
+                    letterSpacing: '-0.02em',
+                    lineHeight: '1.3',
+                  }}
+                >
+                  {CREATE_STEPS[createStep].label}
+                </h2>
 
-                {/* Current step */}
-                {CREATE_STEPS.map((step, i) => (
-                  <div key={step.id} style={{ display: i === createStep ? 'block' : 'none' }}>
-                    <label
-                      style={{
-                        display: 'block',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        color: '#555',
-                        marginBottom: '10px',
-                        fontFamily: 'Montserrat, sans-serif',
-                      }}
-                    >
-                      {step.label}
-                    </label>
-                    <textarea
-                      value={createFields[step.id] ?? ''}
-                      onChange={(e) =>
-                        setCreateFields((f) => ({ ...f, [step.id]: e.target.value }))
-                      }
-                      placeholder={step.placeholder}
-                      rows={4}
-                      style={{
-                        width: '100%',
-                        border: '1.5px solid #e0e0e0',
-                        borderRadius: '8px',
-                        padding: '12px',
-                        fontSize: '13px',
-                        fontFamily: 'Montserrat, sans-serif',
-                        color: '#111',
-                        resize: 'vertical',
-                        outline: 'none',
-                        boxSizing: 'border-box',
-                      }}
-                    />
+                {/* Asset type buttons on step 0 */}
+                {createStep === 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
+                    {(['Email', 'SMS', 'Landing page'] as const).map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => {
+                          setCreateFields((prev) => ({ ...prev, type: opt }));
+                        }}
+                        style={{
+                          padding: '14px 18px',
+                          border:
+                            createFields.type === opt
+                              ? '2px solid #111'
+                              : '1.5px solid #e0e0e0',
+                          borderRadius: '8px',
+                          background: createFields.type === opt ? '#111' : '#fff',
+                          color: createFields.type === opt ? '#fff' : '#111',
+                          fontFamily: 'Montserrat, sans-serif',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        {opt}
+                      </button>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  <textarea
+                    value={createFields[CREATE_STEPS[createStep].id] ?? ''}
+                    onChange={(e) =>
+                      setCreateFields((prev) => ({
+                        ...prev,
+                        [CREATE_STEPS[createStep].id]: e.target.value,
+                      }))
+                    }
+                    placeholder={CREATE_STEPS[createStep].placeholder}
+                    rows={4}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      border: '1.5px solid #e0e0e0',
+                      borderRadius: '8px',
+                      fontFamily: 'Montserrat, sans-serif',
+                      fontSize: '14px',
+                      color: '#111',
+                      resize: 'none',
+                      outline: 'none',
+                      marginBottom: '24px',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                )}
 
-                <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  {createStep > 0 ? (
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  {createStep > 0 && (
                     <button
                       onClick={() => setCreateStep((s) => s - 1)}
                       style={{
-                        background: 'none',
-                        border: '1.5px solid #e0e0e0',
-                        borderRadius: '6px',
-                        padding: '10px 18px',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
+                        flex: 1,
+                        padding: '12px',
+                        border: '1.5px solid #ddd',
+                        borderRadius: '8px',
+                        background: '#fff',
                         color: '#555',
                         fontFamily: 'Montserrat, sans-serif',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
                       }}
                     >
                       Back
                     </button>
-                  ) : (
-                    <div />
                   )}
                   <button
                     onClick={handleCreateNext}
+                    disabled={
+                      createStep === 0
+                        ? !createFields.type
+                        : !createFields[CREATE_STEPS[createStep].id]?.trim()
+                    }
                     style={{
-                      background: '#111',
-                      color: '#fff',
+                      flex: 2,
+                      padding: '12px',
                       border: 'none',
-                      borderRadius: '6px',
-                      padding: '10px 24px',
-                      fontSize: '13px',
-                      fontWeight: '700',
-                      cursor: 'pointer',
+                      borderRadius: '8px',
+                      background:
+                        (createStep === 0
+                          ? !!createFields.type
+                          : !!createFields[CREATE_STEPS[createStep].id]?.trim())
+                          ? '#111'
+                          : '#ccc',
+                      color: '#fff',
                       fontFamily: 'Montserrat, sans-serif',
+                      fontSize: '14px',
+                      fontWeight: '700',
+                      cursor:
+                        (createStep === 0
+                          ? !!createFields.type
+                          : !!createFields[CREATE_STEPS[createStep].id]?.trim())
+                          ? 'pointer'
+                          : 'not-allowed',
+                      letterSpacing: '0.02em',
+                      transition: 'background 0.15s ease',
                     }}
                   >
-                    {createStep < CREATE_STEPS.length - 1 ? 'Next' : 'Generate → Inbox'}
+                    {createStep < CREATE_STEPS.length - 1 ? 'Next' : 'Create'}
                   </button>
                 </div>
               </>
@@ -550,5 +591,4 @@ export default function GetLeadsPage() {
       )}
     </div>
   );
->>>>>>> origin/feature/get-sales
 }

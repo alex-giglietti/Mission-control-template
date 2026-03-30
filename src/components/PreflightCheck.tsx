@@ -37,24 +37,49 @@ export default function PreflightCheck({ activePlaybooks: _activePlaybooks, onCa
       {blockers.length > 0 && (
         <div style={{ marginBottom: '10px' }}>
           {blockers.map((item) => (
-            <div key={item.id} style={{ borderLeft: '3px solid #cc3333', background: '#fff5f5', padding: '10px 14px', marginBottom: '8px', borderRadius: '0 6px 6px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div
+              key={item.id}
+              style={{
+                borderLeft: '3px solid #cc3333',
+                background: '#fff5f5',
+                padding: '10px 14px',
+                marginBottom: '8px',
+                borderRadius: '0 6px 6px 0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
               <span style={{ fontSize: '13px', color: '#cc3333', fontFamily: 'Montserrat, sans-serif', fontWeight: 500 }}>
                 {item.label} is not configured — required to generate
               </span>
               <a href={item.fixHref} style={{ fontSize: '12px', color: '#cc3333', fontFamily: 'Montserrat, sans-serif', fontWeight: 600, textDecoration: 'none', marginLeft: '16px', whiteSpace: 'nowrap' }}>
-                Fix
+                Fix →
               </a>
             </div>
           ))}
         </div>
       )}
+
       {warnings.map((item) => (
-        <div key={item.id} style={{ borderLeft: '3px solid #e8a020', background: '#fffbf0', padding: '10px 14px', marginBottom: '8px', borderRadius: '0 6px 6px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div
+          key={item.id}
+          style={{
+            borderLeft: '3px solid #e8a020',
+            background: '#fffbf0',
+            padding: '10px 14px',
+            marginBottom: '8px',
+            borderRadius: '0 6px 6px 0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <span style={{ fontSize: '13px', color: '#a06010', fontFamily: 'Montserrat, sans-serif', fontWeight: 400 }}>
             {item.label} not connected — output quality may be lower
           </span>
           <a href={item.fixHref} style={{ fontSize: '12px', color: '#a06010', fontFamily: 'Montserrat, sans-serif', fontWeight: 600, textDecoration: 'none', marginLeft: '16px', whiteSpace: 'nowrap' }}>
-            Connect
+            Connect →
           </a>
         </div>
       ))}
