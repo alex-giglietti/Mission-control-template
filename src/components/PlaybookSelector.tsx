@@ -194,4 +194,30 @@ export default function PlaybookSelector({
   );
 }
 
-export { getPlaybooks };
+export { getPlaybooks 
+  'nurture-': [
+    { slug: 'nurture-weekly-value-email',    title: 'Weekly value email',      description: 'Consistent value drip that keeps leads warm.',         source: 'Built-in' },
+    { slug: 'nurture-post-webinar-followup', title: 'Post-webinar follow-up',  description: 'Re-engage attendees after a live or recorded event.',   source: 'Built-in' },
+    { slug: 'nurture-noshow-reengage',       title: 'No-show re-engage',       description: 'Bring back prospects who registered but did not show.', source: 'Built-in' },
+    { slug: 'nurture-sms-drip',             title: 'SMS nurture drip',        description: 'Text-based sequence that moves leads toward a call.',    source: 'Built-in' },
+    { slug: 'nurture-reengagement-campaign', title: 'Re-engagement campaign',  description: 'Revive cold contacts who went quiet.',                   source: 'Custom'   },
+  ],
+  'profit-cart-': [
+    { slug: 'profit-cart-order-bump',    title: 'Order Bump',         description: 'Add a low-ticket upsell at checkout.',             source: 'Built-in' },
+    { slug: 'profit-cart-vsl-page',      title: 'VSL Page',           description: 'Video sales letter driving direct purchase.',      source: 'Built-in' },
+    { slug: 'profit-cart-tripwire',      title: 'Tripwire Offer',     description: 'Low-cost entry offer that converts browsers.',     source: 'Custom'   },
+    { slug: 'profit-cart-abandon-email', title: 'Cart Abandon Email', description: 'Recover leads who left checkout without buying.', source: 'Built-in' },
+  ],
+  'profit-call-': [
+    { slug: 'profit-call-strategy-call', title: 'Strategy Call',  description: 'Consultative close on a 45-minute strategy session.', source: 'Built-in' },
+    { slug: 'profit-call-vip-day',       title: 'VIP Day Offer',  description: 'High-ticket day-rate sold via conversation.',         source: 'Custom'   },
+    { slug: 'profit-call-qualifier',     title: 'Call Qualifier',  description: 'Pre-call sequence that warms leads before the close.', source: 'Built-in' },
+    { slug: 'profit-call-no-show-sms',   title: 'No-Show SMS',    description: 'Text sequence to rescue missed sales calls.',         source: 'Built-in' },
+  ],
+  'profit-crowd-': [
+    { slug: 'profit-crowd-webinar-close',   title: 'Webinar Close',    description: 'Live pitch sequence at the end of a webinar.',    source: 'Built-in' },
+    { slug: 'profit-crowd-challenge-sell',  title: 'Challenge Sell',   description: 'Sell on day 5 of a 5-day challenge.',             source: 'Built-in' },
+    { slug: 'profit-crowd-workshop-upsell', title: 'Workshop Upsell',  description: 'Upsell from a free workshop to a paid program.',  source: 'Custom'   },
+    { slug: 'profit-crowd-summit-close',    title: 'Summit Close',     description: 'Convert summit attendees at the end of day 2.',   source: 'Built-in' },
+  ],
+};
