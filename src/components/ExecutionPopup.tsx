@@ -1,7 +1,12 @@
 'use client';
 
+<<<<<<< HEAD
 import { useState } from 'react';
 import PreflightCheck from './PreflightCheck';
+=======
+import { useEffect, useState } from "react";
+import type { PlaybookCard } from "./PlaybookSelector";
+>>>>>>> origin/feature/keep-customers
 
 interface OutputRow {
   type: 'copy' | 'image' | 'video';
@@ -11,6 +16,7 @@ interface OutputRow {
   count: string;
 }
 
+<<<<<<< HEAD
 const OUTPUT_ROWS: OutputRow[] = [
   { type: 'copy', label: 'Copy', dotColor: '#7c3aed', toolName: 'Claude', count: '7 captions' },
   { type: 'image', label: 'Image', dotColor: '#f97316', toolName: 'Nano Banana', count: '5 visuals' },
@@ -24,9 +30,29 @@ export interface ExecutionPopupProps {
 }
 
 export default function ExecutionPopup({ isOpen, onClose, activePlaybooks }: ExecutionPopupProps) {
+=======
+interface Step {
+  label: string;
+  status: "pending" | "running" | "done";
+}
+
+const STEPS: Step[] = [
+  { label: "Validating playbook configuration", status: "pending" },
+  { label: "Fetching contact segments", status: "pending" },
+  { label: "Queuing sequences", status: "pending" },
+  { label: "Activating workflows", status: "pending" },
+];
+
+export default function ExecutionPopup({
+  selectedPlaybooks,
+  onClose,
+}: ExecutionPopupProps) {
+  const [steps, setSteps] = useState<Step[]>(STEPS.map((s) => ({ ...s })));
+>>>>>>> origin/feature/keep-customers
   const [done, setDone] = useState(false);
   const [canProceed, setCanProceed] = useState(false);
 
+<<<<<<< HEAD
   if (!isOpen) return null;
 
   const handleGenerate = () => {
@@ -37,6 +63,39 @@ export default function ExecutionPopup({ isOpen, onClose, activePlaybooks }: Exe
   const handleClose = () => {
     setDone(false);
     onClose();
+  };
+=======
+  useEffect(() => {
+    let i = 0;
+
+    const advance = () => {
+      if (i >= STEPS.length) {
+        setDone(true);
+        return;
+      }
+      // Mark current as running
+      setSteps((prev) =>
+        prev.map((s, idx) => (idx === i ? { ...s, status: "running" } : s))
+      );
+      setTimeout(() => {
+        // Mark current as done, move to next
+        setSteps((prev) =>
+          prev.map((s, idx) => (idx === i ? { ...s, status: "done" } : s))
+        );
+        i++;
+        setTimeout(advance, 250);
+      }, 650);
+    };
+
+    advance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+>>>>>>> origin/feature/keep-customers
+
+  const stepColor = (status: Step["status"]) => {
+    if (status === "done") return "#10B981";
+    if (status === "running") return "#F59E0B";
+    return "#e0e0e0";
   };
 
   return (
@@ -65,6 +124,7 @@ export default function ExecutionPopup({ isOpen, onClose, activePlaybooks }: Exe
       {/* Sheet */}
       <div
         style={{
+<<<<<<< HEAD
           position: 'fixed',
           bottom: 0,
           left: 0,
@@ -93,8 +153,47 @@ export default function ExecutionPopup({ isOpen, onClose, activePlaybooks }: Exe
         {done ? (
           /* Success state */
           <div style={{ textAlign: 'center', padding: '24px 0' }}>
+=======
+          background: "#fff",
+          borderRadius: 10,
+          padding: "32px 36px",
+          minWidth: 420,
+          maxWidth: 520,
+          width: "100%",
+          fontFamily: "Montserrat, sans-serif",
+          boxShadow: "0 8px 40px rgba(0,0,0,0.12)",
+        }}
+      >
+        {/* Label */}
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 700,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "#aaa",
+            marginBottom: 10,
+          }}
+        >
+          {done ? "Complete" : "Executing"}
+        </div>
+
+        <div
+          style={{ fontSize: 18, fontWeight: 800, color: "#111", marginBottom: 6 }}
+        >
+          {done ? "All systems launched" : "Launching playbooks..."}
+        </div>
+        <div style={{ fontSize: 13, color: "#555", marginBottom: 24 }}>
+          {selectedPlaybooks.map((p) => p.title).join(", ")}
+        </div>
+
+        {/* Steps */}
+        <div style={{ marginBottom: 28 }}>
+          {steps.map((step, i) => (
+>>>>>>> origin/feature/keep-customers
             <div
               style={{
+<<<<<<< HEAD
                 fontSize: '22px',
                 fontWeight: 700,
                 color: '#111',
@@ -181,6 +280,30 @@ export default function ExecutionPopup({ isOpen, onClose, activePlaybooks }: Exe
               }}
             >
               {activePlaybooks.length} playbook{activePlaybooks.length !== 1 ? 's' : ''} active
+=======
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "9px 0",
+                borderBottom:
+                  i < steps.length - 1 ? "1px solid #f0f0f0" : "none",
+                fontSize: 13,
+                color: step.status === "pending" ? "#bbb" : "#111",
+                transition: "color 0.2s ease",
+              }}
+            >
+              <div
+                style={{
+                  width: 14,
+                  height: 14,
+                  borderRadius: "50%",
+                  background: stepColor(step.status),
+                  flexShrink: 0,
+                  transition: "background 0.2s ease",
+                }}
+              />
+              {step.label}
+>>>>>>> origin/feature/keep-customers
             </div>
 
             {/* Pre-flight check */}
