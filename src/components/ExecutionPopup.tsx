@@ -1,150 +1,89 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { PlaybookCard } from "./PlaybookSelector";
+import { useState } from 'react';
+import PreflightCheck from './PreflightCheck';
 
-interface ExecutionPopupProps {
-  selectedPlaybooks: PlaybookCard[];
-  onClose: () => void;
+interface OutputRow {
+  type: 'copy' | 'image' | 'video';
+  label: string;
+  dotColor: string;
+  toolName: string;
+  count: string;
 }
 
-type Step = { label: string; status: "pending" | "running" | "done" };
+const OUTPUT_ROWS: OutputRow[] = [
+  { type: 'copy', label: 'Copy', dotColor: '#7c3aed', toolName: 'Claude', count: '7 captions' },
+  { type: 'image', label: 'Image', dotColor: '#f97316', toolName: 'Nano Banana', count: '5 visuals' },
+  { type: 'video', label: 'Video', dotColor: '#2563eb', toolName: 'HeyGen', count: '2 reels' },
+];
 
-export default function ExecutionPopup({
-  selectedPlaybooks,
-  onClose,
-}: ExecutionPopupProps) {
-  const [steps, setSteps] = useState<Step[]>([
-    { label: "Validating playbook configuration", status: "pending" },
-    { label: "Fetching contact segments", status: "pending" },
-    { label: "Queuing sequences", status: "pending" },
-    { label: "Activating workflows", status: "pending" },
-  ]);
+export interface ExecutionPopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+  activePlaybooks: string[];
+}
+
+export default function ExecutionPopup({ isOpen, onClose, activePlaybooks }: ExecutionPopupProps) {
   const [done, setDone] = useState(false);
+  const [canProceed, setCanProceed] = useState(false);
 
-  useEffect(() => {
-    let i = 0;
-    const tick = () => {
-      if (i >= steps.length) {
-        setDone(true);
-        return;
-      }
-      setSteps((prev) =>
-        prev.map((s, idx) => {
-          if (idx === i) return { ...s, status: "running" };
-          if (idx < i) return { ...s, status: "done" };
-          return s;
-        })
-      );
-      setTimeout(() => {
-        setSteps((prev) =>
-          prev.map((s, idx) => (idx === i ? { ...s, status: "done" } : s))
-        );
-        i++;
-        setTimeout(tick, 300);
-      }, 700);
-    };
-    tick();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  if (!isOpen) return null;
+
+  const handleGenerate = () => {
+    if (!canProceed) return;
+    setDone(true);
+  };
+
+  const handleClose = () => {
+    setDone(false);
+    onClose();
+  };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.45)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 1001,
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 10,
-          padding: "32px 36px",
-          minWidth: 400,
-          maxWidth: 520,
-          width: "100%",
-          fontFamily: "Montserrat, sans-serif",
-          boxShadow: "0 8px 40px rgba(0,0,0,0.12)",
-        }}
-      >
-        <div
-          style={{
-            fontSize: 8,
-            fontWeight: 700,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "#999",
-            marginBottom: 8,
-          }}
-        >
-          Executing
-        </div>
-        <div style={{ fontSize: 18, fontWeight: 700, color: "#111", marginBottom: 4 }}>
-          {done ? "All systems launched" : "Launching playbooks..."}
-        </div>
-        <div style={{ fontSize: 13, color: "#555", marginBottom: 24 }}>
-          {selectedPlaybooks.map((p) => p.title).join(", ")}
-        </div>
-
-        <div style={{ marginBottom: 28 }}>
-          {steps.map((step, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "9px 0",
-                borderBottom: i < steps.length - 1 ? "1px solid #f0f0f0" : "none",
-                fontSize: 13,
-                color: step.status === "pending" ? "#bbb" : "#111",
-              }}
-            >
-              <div
-                style={{
-                  width: 14,
-                  height: 14,
-                  borderRadius: "50%",
-                  background:
-                    step.status === "done"
-                      ? "#10B981"
-                      : step.status === "running"
-                      ? "#F59E0B"
-                      : "#e0e0e0",
-                  flexShrink: 0,
-                  transition: "background 0.2s ease",
-                }}
-              />
-              {step.label}
+    <>
+      <div onClick={handleClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1000 }} />
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: '#fff', borderRadius: '16px 16px 0 0', padding: '32px 24px 40px', zIndex: 1001, maxWidth: '600px', margin: '0 auto', boxShadow: '0 -4px 32px rgba(0,0,0,0.12)', fontFamily: 'Montserrat, sans-serif' }}>
+        <div style={{ width: '40px', height: '4px', background: '#e0e0e0', borderRadius: '2px', margin: '0 auto 24px' }} />
+        {done ? (
+          <div style={{ textAlign: 'center', padding: '24px 0' }}>
+            <div style={{ fontSize: '22px', fontWeight: 700, color: '#111', marginBottom: '8px', letterSpacing: '-0.02em' }}>Done</div>
+            <div style={{ fontSize: '15px', color: '#555', marginBottom: '32px' }}>14 items in Inbox</div>
+            <button onClick={handleClose} style={{ background: '#111', color: '#fff', border: 'none', borderRadius: '8px', padding: '14px 40px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', fontFamily: 'Montserrat, sans-serif' }}>
+              View Inbox
+            </button>
+          </div>
+        ) : (
+          <>
+            <div style={{ fontSize: '16px', fontWeight: 700, color: '#111', marginBottom: '4px', letterSpacing: '-0.01em' }}>Generate Content</div>
+            <div style={{ fontSize: '12px', color: '#999', marginBottom: '24px' }}>
+              {activePlaybooks.length} playbook{activePlaybooks.length !== 1 ? 's' : ''} active
             </div>
-          ))}
-        </div>
-
-        {done && (
-          <button
-            onClick={onClose}
-            style={{
-              width: "100%",
-              padding: "11px 0",
-              borderRadius: 6,
-              border: "none",
-              background: "#111",
-              color: "#fff",
-              fontFamily: "Montserrat, sans-serif",
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: "pointer",
-            }}
-          >
-            Done
-          </button>
+            <PreflightCheck activePlaybooks={activePlaybooks} onCanProceed={setCanProceed} />
+            <div style={{ marginBottom: '24px' }}>
+              {OUTPUT_ROWS.map((row) => (
+                <div key={row.type} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 0', borderBottom: '1px solid #f0f0f0' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: row.dotColor, flexShrink: 0 }} />
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#111', minWidth: '44px' }}>{row.label}</span>
+                    <span style={{ fontSize: '13px', color: '#777' }}>{row.toolName}</span>
+                  </div>
+                  <span style={{ fontSize: '12px', color: '#999', fontWeight: 500 }}>{row.count}</span>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={handleGenerate}
+              disabled={!canProceed}
+              style={{ display: 'block', width: '100%', background: canProceed ? '#111' : '#ccc', color: '#fff', border: 'none', borderRadius: '8px', padding: '16px', fontSize: '14px', fontWeight: 700, cursor: canProceed ? 'pointer' : 'not-allowed', fontFamily: 'Montserrat, sans-serif', letterSpacing: '0.02em', transition: 'background 0.15s ease', marginBottom: '16px' }}
+            >
+              Generate
+            </button>
+            <p style={{ fontSize: '11px', color: '#bbb', textAlign: 'center', margin: 0, fontFamily: 'Montserrat, sans-serif' }}>
+              AI tools from Settings
+            </p>
+          </>
         )}
       </div>
-    </div>
+    </>
   );
 }
