@@ -33,6 +33,19 @@ function getClient(): Client {
 // ---------------------------------------------------------------------------
 
 const MIGRATIONS: string[] = [
+  `CREATE TABLE IF NOT EXISTS ai_agents (
+    id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+    name TEXT NOT NULL,
+    role TEXT,
+    description TEXT,
+    attached_tools TEXT DEFAULT '[]',
+    custom_instructions TEXT,
+    status TEXT DEFAULT 'active' CHECK (status IN ('active', 'paused')),
+    last_activity TEXT,
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now'))
+  )`,
+
   `CREATE TABLE IF NOT EXISTS demos (
     id TEXT PRIMARY KEY,
     business_name TEXT NOT NULL,

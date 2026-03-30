@@ -1,12 +1,17 @@
 'use client';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useState } from 'react';
 import PreflightCheck from './PreflightCheck';
 =======
 import { useEffect, useState } from "react";
 import type { PlaybookCard } from "./PlaybookSelector";
 >>>>>>> origin/feature/keep-customers
+=======
+import { useState } from 'react';
+import PreflightCheck from './PreflightCheck';
+>>>>>>> origin/feature/settings-ai-team
 
 interface OutputRow {
   type: 'copy' | 'image' | 'video';
@@ -17,6 +22,9 @@ interface OutputRow {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/feature/settings-ai-team
 const OUTPUT_ROWS: OutputRow[] = [
   { type: 'copy', label: 'Copy', dotColor: '#7c3aed', toolName: 'Claude', count: '7 captions' },
   { type: 'image', label: 'Image', dotColor: '#f97316', toolName: 'Nano Banana', count: '5 visuals' },
@@ -30,6 +38,7 @@ export interface ExecutionPopupProps {
 }
 
 export default function ExecutionPopup({ isOpen, onClose, activePlaybooks }: ExecutionPopupProps) {
+<<<<<<< HEAD
 =======
 interface Step {
   label: string;
@@ -53,6 +62,11 @@ export default function ExecutionPopup({
   const [canProceed, setCanProceed] = useState(false);
 
 <<<<<<< HEAD
+=======
+  const [done, setDone] = useState(false);
+  const [canProceed, setCanProceed] = useState(false);
+
+>>>>>>> origin/feature/settings-ai-team
   if (!isOpen) return null;
 
   const handleGenerate = () => {
@@ -64,6 +78,7 @@ export default function ExecutionPopup({
     setDone(false);
     onClose();
   };
+<<<<<<< HEAD
 =======
   useEffect(() => {
     let i = 0;
@@ -125,6 +140,14 @@ export default function ExecutionPopup({
       <div
         style={{
 <<<<<<< HEAD
+=======
+
+  return (
+    <>
+      <div onClick={handleClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 1000 }} />
+      <div
+        style={{
+>>>>>>> origin/feature/settings-ai-team
           position: 'fixed',
           bottom: 0,
           left: 0,
@@ -139,6 +162,7 @@ export default function ExecutionPopup({
           fontFamily: 'Montserrat, sans-serif',
         }}
       >
+<<<<<<< HEAD
         {/* Handle bar */}
         <div
           style={{
@@ -227,17 +251,42 @@ export default function ExecutionPopup({
               }}
             >
 >>>>>>> origin/feature/get-sales
+=======
+        <div style={{ width: '40px', height: '4px', background: '#e0e0e0', borderRadius: '2px', margin: '0 auto 24px' }} />
+
+        {done ? (
+          <div style={{ textAlign: 'center', padding: '24px 0' }}>
+            <div style={{ fontSize: '22px', fontWeight: 700, color: '#111', marginBottom: '8px', letterSpacing: '-0.02em' }}>
+              Done
+            </div>
+            <div style={{ fontSize: '15px', color: '#555', marginBottom: '32px' }}>
+              14 items in Inbox
+            </div>
+            <button onClick={handleClose} style={{ background: '#111', color: '#fff', border: 'none', borderRadius: '8px', padding: '14px 40px', fontSize: '14px', fontWeight: 600, cursor: 'pointer', fontFamily: 'Montserrat, sans-serif' }}>
+>>>>>>> origin/feature/settings-ai-team
               View Inbox
             </button>
           </div>
         ) : (
           <>
 <<<<<<< HEAD
+<<<<<<< HEAD
             <div style={{ fontSize: '16px', fontWeight: 700, color: '#111', marginBottom: '4px', letterSpacing: '-0.01em' }}>Generate Content</div>
             <div style={{ fontSize: '12px', color: '#999', marginBottom: '24px' }}>
               {activePlaybooks.length} playbook{activePlaybooks.length !== 1 ? 's' : ''} active
             </div>
             <PreflightCheck activePlaybooks={activePlaybooks} onCanProceed={setCanProceed} />
+=======
+            <div style={{ fontSize: '16px', fontWeight: 700, color: '#111', marginBottom: '4px', letterSpacing: '-0.01em' }}>
+              Generate Content
+            </div>
+            <div style={{ fontSize: '12px', color: '#999', marginBottom: '24px' }}>
+              {activePlaybooks.length} playbook{activePlaybooks.length !== 1 ? 's' : ''} active
+            </div>
+
+            <PreflightCheck activePlaybooks={activePlaybooks} onCanProceed={setCanProceed} />
+
+>>>>>>> origin/feature/settings-ai-team
             <div style={{ marginBottom: '24px' }}>
               {OUTPUT_ROWS.map((row) => (
                 <div key={row.type} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 0', borderBottom: '1px solid #f0f0f0' }}>
@@ -250,6 +299,7 @@ export default function ExecutionPopup({
                 </div>
               ))}
             </div>
+<<<<<<< HEAD
             <button
               onClick={handleGenerate}
               disabled={!canProceed}
@@ -368,6 +418,9 @@ export default function ExecutionPopup({
             </div>
 
             {/* Generate button */}
+=======
+
+>>>>>>> origin/feature/settings-ai-team
             <button
               onClick={handleGenerate}
               disabled={!canProceed}
@@ -391,6 +444,7 @@ export default function ExecutionPopup({
               Generate
             </button>
 
+<<<<<<< HEAD
             {/* Footer */}
             <p
               style={{
@@ -403,6 +457,10 @@ export default function ExecutionPopup({
             >
               AI tools from Settings → Connections
 >>>>>>> origin/feature/get-sales
+=======
+            <p style={{ fontSize: '11px', color: '#bbb', textAlign: 'center', margin: 0, fontFamily: 'Montserrat, sans-serif' }}>
+              AI tools from Settings → Connections
+>>>>>>> origin/feature/settings-ai-team
             </p>
           </>
         )}

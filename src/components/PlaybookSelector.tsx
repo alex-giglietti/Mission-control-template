@@ -20,10 +20,14 @@ const PLAYBOOK_DATA: Record<string, Playbook[]> = {
   'publish-': [
     { slug: 'publish-daily-7', title: 'Daily 7', description: 'Post 7 pieces of content every day across platforms.', source: 'Built-in' },
 <<<<<<< HEAD
+<<<<<<< HEAD
     { slug: 'publish-shorts-flood', title: 'Shorts Flood', description: 'Short-form video blitz across platforms daily.', source: 'Built-in' },
 =======
     { slug: 'publish-shorts-flood', title: 'Shorts Flood', description: 'Short-form video blitz — 3 reels + 2 TikToks daily.', source: 'Built-in' },
 >>>>>>> origin/feature/get-sales
+=======
+    { slug: 'publish-shorts-flood', title: 'Shorts Flood', description: 'Short-form video blitz 3 reels + 2 TikToks daily.', source: 'Built-in' },
+>>>>>>> origin/feature/settings-ai-team
     { slug: 'publish-email-nurture', title: 'Email Nurture', description: 'Weekly email sequence to warm your list.', source: 'Custom' },
     { slug: 'publish-authority-blog', title: 'Authority Blog', description: 'Long-form posts that build SEO and credibility.', source: 'Built-in' },
   ],
@@ -80,6 +84,7 @@ export default function PlaybookSelector({
         </p>
       )}
 <<<<<<< HEAD
+<<<<<<< HEAD
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
 =======
 
@@ -91,6 +96,9 @@ export default function PlaybookSelector({
         }}
       >
 >>>>>>> origin/feature/get-sales
+=======
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+>>>>>>> origin/feature/settings-ai-team
         {playbooks.map((pb) => {
           const isActive = active.has(pb.slug);
           return (
@@ -109,6 +117,7 @@ export default function PlaybookSelector({
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '6px' }}>
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <span style={{ fontSize: '14px', fontWeight: isActive ? 700 : 500, color: '#111', fontFamily: 'Montserrat, sans-serif' }}>
 =======
                 <span
@@ -120,16 +129,23 @@ export default function PlaybookSelector({
                   }}
                 >
 >>>>>>> origin/feature/get-sales
+=======
+                <span style={{ fontSize: '14px', fontWeight: isActive ? 700 : 500, color: '#111', fontFamily: 'Montserrat, sans-serif' }}>
+>>>>>>> origin/feature/settings-ai-team
                   {pb.title}
                 </span>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0, marginLeft: '8px' }}>
                   {isActive && (
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/feature/settings-ai-team
                     <span style={{ fontSize: '10px', fontWeight: 600, color: '#111', background: '#f0f0f0', padding: '2px 7px', borderRadius: '20px', letterSpacing: '0.04em', textTransform: 'uppercase' as const, fontFamily: 'Montserrat, sans-serif' }}>
                       Active
                     </span>
                   )}
                   <span style={{ fontSize: '10px', fontWeight: 500, color: '#999', background: '#f7f7f7', padding: '2px 7px', borderRadius: '20px', fontFamily: 'Montserrat, sans-serif' }}>
+<<<<<<< HEAD
 =======
                     <span
                       style={{
@@ -159,10 +175,13 @@ export default function PlaybookSelector({
                     }}
                   >
 >>>>>>> origin/feature/get-sales
+=======
+>>>>>>> origin/feature/settings-ai-team
                     {pb.source}
                   </span>
                 </div>
               </div>
+<<<<<<< HEAD
 <<<<<<< HEAD
               <p style={{ fontSize: '12px', color: '#777', margin: 0, lineHeight: '1.5', fontFamily: 'Montserrat, sans-serif' }}>
 =======
@@ -176,17 +195,24 @@ export default function PlaybookSelector({
                 }}
               >
 >>>>>>> origin/feature/get-sales
+=======
+              <p style={{ fontSize: '12px', color: '#777', margin: 0, lineHeight: '1.5', fontFamily: 'Montserrat, sans-serif' }}>
+>>>>>>> origin/feature/settings-ai-team
                 {pb.description}
               </p>
             </div>
           );
         })}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/feature/settings-ai-team
         <a
           href="/connections"
           style={{ border: '1.5px dashed #d0d0d0', borderRadius: '8px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '13px', fontWeight: 500, fontFamily: 'Montserrat, sans-serif', textDecoration: 'none', cursor: 'pointer', minHeight: '80px' }}
           onMouseEnter={(e) => { const el = e.currentTarget as HTMLAnchorElement; el.style.borderColor = '#aaa'; el.style.color = '#555'; }}
           onMouseLeave={(e) => { const el = e.currentTarget as HTMLAnchorElement; el.style.borderColor = '#d0d0d0'; el.style.color = '#aaa'; }}
+<<<<<<< HEAD
 =======
 
         <a
@@ -218,6 +244,8 @@ export default function PlaybookSelector({
             el.style.color = '#aaa';
           }}
 >>>>>>> origin/feature/get-sales
+=======
+>>>>>>> origin/feature/settings-ai-team
         >
           + Add playbook
         </a>
@@ -226,6 +254,7 @@ export default function PlaybookSelector({
   );
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 export { getPlaybooks };
 =======
@@ -257,3 +286,6 @@ export { getPlaybooks
   ],
 };
 >>>>>>> origin/feature/get-sales
+=======
+export { getPlaybooks };
+>>>>>>> origin/feature/settings-ai-team
